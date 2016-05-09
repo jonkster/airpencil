@@ -1,9 +1,9 @@
 {
-  "name": "fingertrack",
+  "name": "airpencil",
   "authors": [
     "Jonathan Kelly <jonk@bigpond.com>"
   ],
-  "description": "Tracks finger or pointer movement to the screen",
+  "description": "Tracks finger or pointer movement via a webcam and record the 'air' drawing on screen",
   "main": "",
   "moduleType": [
     "node"

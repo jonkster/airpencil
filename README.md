@@ -1,9 +1,12 @@
 # airpencil
-This is a simple experimental application to capture drawing in the air with a finger (or pointer), using a webcam to the screen.
 
-It is a very simple and rough prototype.
+This is a simple experimental application to capture drawing in the air with a finger (or pointer), using a webcam and then displaying the captured drawing on screen.
 
-Uses tracking.js see - https://trackingjs.com/ and is based off one of their example applications.
+The aim is to develop an application that will allow someone with fine motor skill problems to be able to draw, make written notes or record arithmetic workings etc on their laptop, by drawing with hand or finger gestures in front of the laptop's camera.
+
+It currently is a very simple and rough prototype to be used to see if it can be productively used by someone with fine motor problems.
+
+Code heavily based on the tracking.js library - see: https://trackingjs.com/ and is based off one of their example applications.
 
 To install, clone the repository and run ```bower init```
 

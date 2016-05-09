@@ -1,0 +1,29 @@
+{
+  "name": "fingertrack",
+  "authors": [
+    "Jonathan Kelly <jonk@bigpond.com>"
+  ],
+  "description": "Tracks finger or pointer movement to the screen",
+  "main": "",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "skunk",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "tracking": "^1.1.2",
+    "dat-gui": "^0.5.1"
+  },
+  "resolutions": {
+    "dat-gui": "^0.5.1"
+  }
+}

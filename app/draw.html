@@ -124,7 +124,7 @@
     }
 
     function shiftLeft() {
-            for (var j = 0; j < drawSegments[i].length; j += 2)
+            for (var j = 0; j < drawSegments.length; j += 2)
             {
                 if (drawSegments[j] != -1 && drawSegments[j+1] != -1)
                     drawSegments[j] += 100;
@@ -132,7 +132,7 @@
     }
 
     function shiftRight() {
-            for (var j = 0; j < drawSegments[i].length; j += 2)
+            for (var j = 0; j < drawSegments.length; j += 2)
             {
                 if (drawSegments[j] != -1 && drawSegments[j+1] != -1)
                     drawSegments[j] -= 100;

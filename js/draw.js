@@ -1,8 +1,10 @@
 var outScale = 8;
 var spacePressed = false;
-var thresholdDifference = 90;
+var difference = 30;
 var minTargetWidth = 3;
-var minIntensity = 9000;
+var maxTargetWidth = 20;
+var minIntensity = 128;
+var minGroupSize = 30;
 var vidTop = 100/2;
 var videoContext = undefined;
 var paperContext = undefined;
@@ -12,10 +14,6 @@ var boxCount = 0;
 
 var drawSegments = [-1, -1];
 
-window.minTargetWidth = 3;
-window.maxTargetWidth = 30;
-window.colourDifference = 20;
-window.colourMinIntensity = 45;
 
 function addLineBit(x0, y0, x1, y1) {
     if (x0 == undefined)
@@ -75,14 +73,13 @@ function setKeyboardHandlers() {
 
 function setColourTargets() {
   tracking.ColorTracker.registerColor('yellow', function(r, g, b) {
-      dx = r - 255,
-      dy = g - 255,
-      dz = b - 0;
 
-    if ((r - b) >= thresholdDifference && (g - b) >= thresholdDifference) {
-      return true;
+    if ((r - b) >= difference && (g - b) >= difference) {
+        return true;
     }
-    return dx * dx + dy * dy + dz * dz < minIntensity;
+    if (r + g > 520)
+        return b < minIntensity;
+    return false;
   });
 
 }
@@ -90,39 +87,44 @@ function setColourTargets() {
 function setGuiParameters(tracker) {
 
     var setTargetWidthMin = function(v) {
-        if (window.maxTargetWidth <= v)
+        if (maxTargetWidth <= v)
         {
-            window.maxTargetWidth = v + 1;
+            maxTargetWidth = v + 1;
         }
         minTargetWidth = v;
         tracker.setMinDimension(v);
     };
 
     var setTargetWidthMax = function(v) {
-        if (window.minTargetWidth >= v)
+        if (minTargetWidth >= v)
         {
-            window.maxTargetWidth = v;
-            v = window.minTargetWidth + 1;
+            maxTargetWidth = v;
+            v = minTargetWidth + 1;
         }
         tracker.setMaxDimension(v);
     };
 
     var setColourT = function(v) {
-        thresholdDifference = v;
+        difference = v;
     };
 
     var setColourI = function(v) {
         minIntensity = v;
     };
 
-    setTargetWidthMin(window.minTargetWidth);
-    setTargetWidthMax(window.maxTargetWidth);
+    var setMinGroupSize = function(v) {
+        tracker.setMinGroupSize(v);
+    }
+
+    setTargetWidthMin(minTargetWidth);
+    setTargetWidthMax(maxTargetWidth);
 
     var gui = new dat.GUI();
     gui.add(window, 'minTargetWidth', 1, 80).onChange(setTargetWidthMin);
     gui.add(window, 'maxTargetWidth', 10, 200).onChange(setTargetWidthMax);
-    gui.add(window, 'thresholdDifference', 10, 200).onChange(setColourT);
-    gui.add(window, 'minIntensity', 1000, 20000).onChange(setColourI);
+    gui.add(tracker, 'difference', 10, 200).onChange(setColourT);
+    gui.add(tracker, 'minIntensity', 40, 250).onChange(setColourI);
+    gui.add(window, 'minGroupSize', 10, 100).onChange(setMinGroupSize);
 }
 
 
@@ -171,35 +173,6 @@ function shiftRight() {
     }
 }
 
-function makeFingerTracker() {
-
-    var FingerTracker = function(opt_colors) {
-        FingerTracker.base(this, 'constructor', opt_colors);
-    };
-    tracking.inherits(FingerTracker, tracking.ColorTracker);
-
-    FingerTracker.prototype.track = function(pixels, width, height) {
-        var self = this;
-        var colors = this.getColors();
-
-        if (!colors) {
-            throw new Error('Colors not specified, try `new tracking.ColorTracker("magenta")`.');
-        }
-
-        var results = [];
-        blurred = pixels;
-
-        colors.forEach(function(color) {
-            results = results.concat(self.trackColor_(blurred, width, height, color));
-        });
-
-        this.emit('track', {
-            data: results
-        });
-    };
-
-    return FingerTracker;
-}
 
 window.onload = function() {
 
@@ -215,9 +188,7 @@ window.onload = function() {
 
     drawSegments = [];
 
-    var FingerTracker = makeFingerTracker();
-    var tracker = new FingerTracker([drawColour]);
-    //var tracker = new tracking.ColorTracker([drawColour]);
+    var tracker = new tracking.FingerTracker([drawColour]);
 
     tracker.setMinDimension(minTargetWidth);
     setGuiParameters(tracker);
